@@ -1,0 +1,145 @@
+type ConditionByLevel {
+    R: String
+    S: String
+    G: String
+    P: String
+}
+type Attraction {
+    id: ID!
+    list: [String!]!
+    has_copayment: Boolean,
+    copayment: Int,
+    levels: String
+}
+
+type Supplier {
+    id: ID!
+    name: String!
+    info: String!
+    conditions: ConditionByLevel
+    rules: String
+    gallery: String
+    district: String,
+    phone: [String!]!
+    address: String!
+    url: String
+    lat: Float
+    lng: Float
+    tags: [String!]
+    attraction_objects: [Attraction!]!
+    created_at: String!
+    updated_at: String!
+    mon: String!
+    tue: String!
+    wed: String!
+    thu: String!
+    fri: String!
+    sat: String!
+    sun: String!
+    week: String!
+    last_changed_at: String
+    sh_message: String
+    sh_url: String
+}
+
+enum CardLevel {
+    r,
+    s,
+    g,
+    p,
+}
+
+type Dictionary {
+    key: String
+    value: String
+}
+
+type DictionaryCollection {
+    level: [Dictionary]
+    city: [Dictionary]
+    tag: [Dictionary]
+    activity: [Dictionary]
+}
+
+type CityZoom {
+    city: String
+    zoom: Int
+}
+
+type CityLocation {
+    city: String
+    lat: Float
+    lng: Float
+}
+
+type ZoomCollection {
+    city: [CityZoom]
+}
+
+type LocationCollection {
+    city: [CityLocation]
+}
+
+type Point {
+    lat: Float
+    lng: Float
+}
+
+type FilterCollection {
+    level: [CardLevel]
+    city: [String]
+    tag: [String]
+    activity: [String]
+    zoom: Int
+    location: Point
+}
+
+type SupplierCollectionWithFilters {
+    filters: FilterCollection
+    suppliers: [Supplier!]!
+    dictionary: DictionaryCollection
+}
+
+input MapFilters {
+    language: String
+    city: String
+    subscription: String
+    country: String
+}
+
+input InputPoint {
+    lat: Float
+    lng: Float
+}
+
+type DefaultFilters {
+    subscription: String
+    city: String
+}
+
+type FilterLocalizedCollection {
+    subscription: [Dictionary]
+    city: [Dictionary]
+    tag: [Dictionary]
+    activity: [Dictionary]
+    zoom: Int
+    location: Point
+    defaults: DefaultFilters
+}
+
+type Marker {
+    lat: Float,
+    lng: Float,
+    suppliers: [Supplier]
+}
+
+type Query {
+    filters(name: String, activities: [String], city: String, level: CardLevel, tags: [String]): FilterCollection
+    suppliers_with_filters(name: String, activities: [String], city: String, level: CardLevel, tags: [String]): SupplierCollectionWithFilters
+    suppliers(name: String, activities: String, city: String, district: String, cards: String, tags: String): [Supplier!]!
+    supplier(id: ID): Supplier
+
+    map_filters(general: MapFilters): FilterLocalizedCollection
+    map_markers(general: MapFilters, leftTopPoint: InputPoint, centerPoint: InputPoint): [Marker]
+    map_search_suppliers(general: MapFilters, search: String): [Supplier]
+}
